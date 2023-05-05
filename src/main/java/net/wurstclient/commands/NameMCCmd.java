@@ -7,8 +7,8 @@
  */
 package net.wurstclient.commands;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import net.minecraft.util.Util;
 import net.wurstclient.command.CmdError;
@@ -25,8 +25,6 @@ import java.util.Objects;
 
 public final class NameMCCmd extends Command {
 	private static final String mojangAPI = "https://api.mojang.com/users/profiles/minecraft/";
-	
-	private Gson gson = new Gson();
 	
 	public NameMCCmd() {
 		super("namemc", "Quickly opens a user's NameMC profile.", ".namemc <username>");
@@ -54,34 +52,15 @@ public final class NameMCCmd extends Command {
 	}
 	
 	private String fetchMojang(String name) throws Exception {
-		return parseRes(fetch(mojangAPI + name));
-	}
-	
-	private String parseRes(String input) {
-		JsonObject x = gson.fromJson(input, JsonObject.class);
+		URL url = new URL(mojangAPI + name);
 		
-		if (x.has("id")) {
-			return x.get("id").getAsString();
+		JsonObject obj = JsonParser.parseReader(new InputStreamReader(url.openStream()))
+			.getAsJsonObject();
+		
+		if (obj.has("id")) {
+			return obj.get("id").getAsString();
 		}
 		
 		return null;
-	}
-
-	private String fetch(String target) throws Exception {
-		URL url = new URL(target);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
-		con.setRequestMethod("GET");
-
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String inputLine;
-		StringBuilder response = new StringBuilder();
-
-		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
-		}
-
-		in.close();
-
-		return response.toString();
 	}
 }
