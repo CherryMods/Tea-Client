@@ -24,6 +24,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Maps;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import java.util.Map;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.InsecureTextureException;
 import com.mojang.authlib.minecraft.MinecraftProfileTexture;
@@ -142,12 +145,14 @@ public class PlayerSkinProviderMixin
 	
 	private void setupWurstCapes()
 	{
+		JsonObject wurstCapes = new JsonObject();
+
 		try
 		{
 			// TODO: download capes to file
 			URL url = new URL("https://www.wurstclient.net/api/v1/capes.json");
 			
-			capes =
+			wurstCapes =
 				JsonParser.parseReader(new InputStreamReader(url.openStream()))
 					.getAsJsonObject();
 			
@@ -158,6 +163,21 @@ public class PlayerSkinProviderMixin
 			
 			e.printStackTrace();
 		}
+		
+		JsonObject teaCapes = new JsonObject();
+		
+		try {
+			URL url = new URL("https://sparklet.org/api/tea-capes");
+			
+			teaCapes =
+				JsonParser.parseReader(new InputStreamReader(url.openStream()))
+					.getAsJsonObject();
+		} catch(Exception e) {
+			System.err.println("[Wurst] Failed to load capes from sparklet.org!");
+		}
+		
+		extendJsonObject(wurstCapes, teaCapes);
+		capes = wurstCapes;
 	}
 	
 	@Shadow
@@ -167,4 +187,41 @@ public class PlayerSkinProviderMixin
 	{
 		return null;
 	}
+	
+	
+	
+	
+	// reduced and inlined version of this post:
+	// https://stackoverflow.com/a/34092374/
+	private static JsonObject extendJsonObject(JsonObject leftObj, JsonObject rightObj) {
+		for (Map.Entry<String, JsonElement> rightEntry : rightObj.entrySet()) {
+			String rightKey = rightEntry.getKey();
+			JsonElement rightVal = rightEntry.getValue();
+			if (leftObj.has(rightKey)) {
+				// conflict
+				JsonElement leftVal = leftObj.get(rightKey);
+				if (leftVal.isJsonArray() && rightVal.isJsonArray()) {
+					JsonArray leftArr = leftVal.getAsJsonArray();
+					JsonArray rightArr = rightVal.getAsJsonArray();
+					// concat the arrays -- there cannot be a conflict
+					// in an array, it's just a collection of stuff
+					for (int i = 0; i < rightArr.size(); i++) {
+						leftArr.add(rightArr.get(i));
+					}
+				} else if (leftVal.isJsonObject() && rightVal.isJsonObject()) {
+					// recursive merging
+					extendJsonObject(leftVal.getAsJsonObject(), rightVal.getAsJsonObject());
+				} else {
+					// not both arrays or objects, normal merge with conflict resolution
+					leftObj.add(rightKey, rightVal);
+				}
+			} else {
+				// no conflict, add to the object
+				leftObj.add(rightKey, rightVal);
+			}
+		}
+
+		return leftObj;
+	}
 }
+
