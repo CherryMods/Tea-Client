@@ -68,6 +68,7 @@ public final class WurstLogo
 	}
 	
 	private String getVersionString(WurstLogoOtf.Format fmt) {
+		if (fmt == WurstLogoOtf.Format.NoVersion) return "";
 		String res = "";
 		
 		boolean showVer = (
