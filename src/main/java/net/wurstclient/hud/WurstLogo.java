@@ -32,24 +32,28 @@ public final class WurstLogo
 	public void render(MatrixStack matrixStack)
 	{
 		WurstLogoOtf otf = WurstClient.INSTANCE.getOtfs().wurstLogoOtf;
+		WurstLogoOtf.Format fmt = otf.getFormat();
+		
 		if(!otf.isVisible())
 			return;
 		
-		String version = getVersionString();
+		String version = getVersionString(fmt);
 		TextRenderer tr = WurstClient.MC.textRenderer;
 		
-		// draw version background
-		GL11.glEnable(GL11.GL_BLEND);
-		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+		// draw version background if formatter not NoVersion
+		if (fmt != WurstLogoOtf.Format.NoVersion) {
+			GL11.glEnable(GL11.GL_BLEND);
+			GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		
-		float[] color;
-		if(WurstClient.INSTANCE.getHax().rainbowUiHack.isEnabled())
-			color = WurstClient.INSTANCE.getGui().getAcColor();
-		else
-			color = otf.getBackgroundColor();
-		
-		drawQuads(matrixStack, 0, 6, tr.getWidth(version) + 76, 17, color[0],
-			color[1], color[2], 0.5F);
+			float[] color;
+			if(WurstClient.INSTANCE.getHax().rainbowUiHack.isEnabled())
+				color = WurstClient.INSTANCE.getGui().getAcColor();
+			else
+				color = otf.getBackgroundColor();
+			
+			drawQuads(matrixStack, 0, 6, tr.getWidth(version) + 76, 17, color[0],
+				color[1], color[2], 0.5F);
+		}
 		
 		// draw version string
 		GL11.glEnable(GL11.GL_CULL_FACE);
@@ -63,15 +67,26 @@ public final class WurstLogo
 		DrawableHelper.drawTexture(matrixStack, 0, 3, 0, 0, 72, 18, 72, 18);
 	}
 	
-	private String getVersionString()
-	{
-		String version = "v" + WurstClient.VERSION;
-		version += " MC" + WurstClient.MC_VERSION;
+	private String getVersionString(WurstLogoOtf.Format fmt) {
+		String res = "";
+		
+		boolean showVer = (
+			fmt == WurstLogoOtf.Format.FULL ||
+			fmt == WurstLogoOtf.Format.WurstOnly
+		);
+		
+		boolean showMCVer = (
+			fmt == WurstLogoOtf.Format.FULL ||
+			fmt == WurstLogoOtf.Format.MCOnly
+		);
+
+		if (showVer) res += "v" + WurstClient.VERSION + (showMCVer ? " " : "");
+		if (showMCVer) res += "MC" + WurstClient.MC_VERSION;
 		
 		if(WurstClient.INSTANCE.getUpdater().isOutdated())
-			version += " (outdated)";
+			res += " (outdated)";
 		
-		return version;
+		return res;
 	}
 	
 	private void drawQuads(MatrixStack matrices, int x1, int y1, int x2, int y2,

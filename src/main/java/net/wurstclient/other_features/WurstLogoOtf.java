@@ -30,6 +30,9 @@ public final class WurstLogoOtf extends OtherFeature
 	
 	private final EnumSetting<Visibility> visibility =
 		new EnumSetting<>("Visibility", Visibility.values(), Visibility.ALWAYS);
+
+	private final EnumSetting<Format> format =
+		new EnumSetting<>("Format", Format.values(), Format.FULL);
 	
 	public WurstLogoOtf()
 	{
@@ -37,11 +40,16 @@ public final class WurstLogoOtf extends OtherFeature
 		addSetting(bgColor);
 		addSetting(txtColor);
 		addSetting(visibility);
+		addSetting(format);
 	}
 	
 	public boolean isVisible()
 	{
 		return visibility.getSelected().isVisible();
+	}
+	
+	public Format getFormat() {
+		return format.getSelected();
 	}
 	
 	public float[] getBackgroundColor()
@@ -79,6 +87,24 @@ public final class WurstLogoOtf extends OtherFeature
 		@Override
 		public String toString()
 		{
+			return name;
+		}
+	}
+	
+	public static enum Format {
+		FULL("Full"),
+		WurstOnly("Wurst Version Only"),
+		MCOnly("MC Version Only"),
+		NoVersion("No version");
+		
+		private final String name;
+		
+		private Format(String name) {
+			this.name = name;
+		}
+		
+		@Override
+		public String toString() {
 			return name;
 		}
 	}
