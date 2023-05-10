@@ -13,6 +13,7 @@ import java.util.function.BooleanSupplier;
 import net.wurstclient.DontBlock;
 import net.wurstclient.SearchTags;
 import net.wurstclient.other_feature.OtherFeature;
+import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
 
@@ -20,6 +21,9 @@ import net.wurstclient.settings.EnumSetting;
 @DontBlock
 public final class WurstLogoOtf extends OtherFeature
 {
+	private final CheckboxSetting showBg =
+		new CheckboxSetting("Show BG", "Shows the background rectangle behind the logo and text", true);
+	
 	private final ColorSetting bgColor = new ColorSetting("Background",
 		"Background color.\n"
 			+ "Only visible when \u00a76RainbowUI\u00a7r is disabled.",
@@ -37,6 +41,7 @@ public final class WurstLogoOtf extends OtherFeature
 	public WurstLogoOtf()
 	{
 		super("WurstLogo", "Shows the Wurst logo and version on the screen.");
+		addSetting(showBg);
 		addSetting(bgColor);
 		addSetting(txtColor);
 		addSetting(visibility);
@@ -46,6 +51,10 @@ public final class WurstLogoOtf extends OtherFeature
 	public boolean isVisible()
 	{
 		return visibility.getSelected().isVisible();
+	}
+	
+	public boolean isBgVisible() {
+		return showBg.isChecked();
 	}
 	
 	public Format getFormat() {
