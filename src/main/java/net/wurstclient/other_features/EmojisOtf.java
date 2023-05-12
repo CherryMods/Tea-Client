@@ -59,18 +59,18 @@ public final class EmojisOtf extends OtherFeature implements ChatOutputListener 
 
 	private String replaceEmotes(String input) {
 		String res = input;
-		for (Pair<String> pair : EMOJI_TABLE) {
+		for (EmojiPair<String> pair : EMOJI_TABLE) {
 			res = res.replaceAll(pair.getF(), pair.getS());
 		}
 
 		return res;
 	}
 
-	private static class Pair<T> {
+	public static class EmojiPair<T> {
 		private final T first;
 		private final T second;
 
-		public Pair(T f, T s) {
+		public EmojiPair(T f, T s) {
 			first = f;
 			second = s;
 		}
@@ -78,18 +78,22 @@ public final class EmojisOtf extends OtherFeature implements ChatOutputListener 
 		public T getF() { return first; }
 		public T getS() { return second; }
 
-		public static <T> ArrayList<Pair<T>> intoAL(T[] pairs) {
-			ArrayList<Pair<T>> res = new ArrayList<Pair<T>>();
+		public static <T> ArrayList<EmojiPair<T>> intoAL(T[] pairs) {
+			ArrayList<EmojiPair<T>> res = new ArrayList<EmojiPair<T>>();
 
 			for (int i=1; i<pairs.length; i += 2) {
-				res.add(new Pair<T>(pairs[i-1], pairs[i]));
+				res.add(new EmojiPair<T>(pairs[i-1], pairs[i]));
 			}
 
 			return res;
 		}
 	}
+
+	public static ArrayList<EmojiPair<String>> getEmojiTable() {
+		return EMOJI_TABLE;
+	}
 	
-	private static final ArrayList<Pair<String>> EMOJI_TABLE = Pair.intoAL(new String[] {
+	private static final ArrayList<EmojiPair<String>> EMOJI_TABLE = EmojiPair.intoAL(new String[] {
 		":smile:",			"☺",
 		":frown:",			"☹",
 		":skull:",			"☠",
