@@ -258,6 +258,7 @@ public final class EmojisOtf extends OtherFeature implements ChatOutputListener 
 		":tea:",			"☕",
 		":fight:",			"⚔",
 		":sword:",			"🗡",
-		":pickaxe:",		"⛏️",
+		":pickaxe:",		"⛏",
+		":sus:",			"ඞ",
 	});
 }
