@@ -118,7 +118,7 @@ public final class EmojisOtf extends OtherFeature implements ChatOutputListener 
 		":mail:",			"✉",
 		":pencil:",			"✏",
 		":pen:",			"✒",
-		":scissors:",		"✂",
+		":shears:",			"✂",
 		":rd:",				"☢",
 		":bio:",			"☣",
 		":U:",				"⬆",
