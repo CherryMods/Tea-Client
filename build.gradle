@@ -42,6 +42,8 @@ dependencies {
 	// In other words, Wurst won't compile without this library,
 	// even though it's Minecraft that actually uses it.
 	modImplementation 'com.google.code.findbugs:jsr305:3.0.2'
+	
+	modImplementation 'org.graalvm.js:js:21.2.0'
 }
 
 loom {
