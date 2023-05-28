@@ -32,6 +32,7 @@ public final class CmdList
 	public final EmojisCmd emojisCmd = new EmojisCmd();
 	public final EnabledHaxCmd enabledHaxCmd = new EnabledHaxCmd();
 	public final EnchantCmd enchantCmd = new EnchantCmd();
+	public final EvalCmd evalCmd = new EvalCmd();
 	public final ExcavateCmd excavateCmd = new ExcavateCmd();
 	public final FeaturesCmd featuresCmd = new FeaturesCmd();
 	public final FollowCmd followCmd = new FollowCmd();
