@@ -31,23 +31,27 @@ public final class SafeWalkHack extends Hack
 		0.05, 0.05, 0.25, 0.001, ValueDisplay.DECIMAL.withSuffix("m"));
 	
 	private boolean sneaking;
-
-	public SafeWalkHack() {
+	
+	public SafeWalkHack()
+	{
 		super("SafeWalk");
 		setCategory(Category.MOVEMENT);
 		addSetting(sneak);
 		addSetting(edgeDistance);
 	}
-
+	
 	@Override
-	protected void onEnable() {
+	protected void onEnable()
+	{
 		WURST.getHax().parkourHack.setEnabled(false);
 		sneaking = false;
 	}
-
+	
 	@Override
-	protected void onDisable() {
-		if (sneaking) setSneaking(false);
+	protected void onDisable()
+	{
+		if(sneaking)
+			setSneaking(false);
 	}
 	
 	public void onClipAtLedge(boolean clipping)
@@ -71,13 +75,16 @@ public final class SafeWalkHack extends Hack
 		
 		setSneaking(clipping);
 	}
-
-	private void setSneaking(boolean sneaking) {
+	
+	private void setSneaking(boolean sneaking)
+	{
 		KeyBinding sneakKey = MC.options.sneakKey;
-
-		if (sneaking) sneakKey.setPressed(true);
-		else((IKeyBinding) sneakKey).resetPressedState();
-
+		
+		if(sneaking)
+			sneakKey.setPressed(true);
+		else
+			((IKeyBinding)sneakKey).resetPressedState();
+		
 		this.sneaking = sneaking;
 	}
 	

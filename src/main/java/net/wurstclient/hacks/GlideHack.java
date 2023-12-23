@@ -27,9 +27,10 @@ import net.wurstclient.util.BlockUtils;
 public final class GlideHack extends Hack
 	implements UpdateListener, AirStrafingSpeedListener
 {
-	private final CheckboxSetting doSneakFall = new CheckboxSetting("Temporary Disable",
+	private final CheckboxSetting doSneakFall =
+		new CheckboxSetting("Temporary Disable",
 			"Temporarily disable this hack using your crouch button.\n"
-			+ "Turn off if you want to glide while crouching.",
+				+ "Turn off if you want to glide while crouching.",
 			true);
 	
 	private final SliderSetting fallSpeed = new SliderSetting("Fall speed",
@@ -44,7 +45,8 @@ public final class GlideHack extends Hack
 		0.01,
 		v -> v == 0 ? "disabled" : ValueDisplay.DECIMAL.getValueString(v));
 	
-	public GlideHack() {
+	public GlideHack()
+	{
 		super("Glide");
 		
 		setCategory(Category.MOVEMENT);
@@ -54,20 +56,23 @@ public final class GlideHack extends Hack
 	}
 	
 	@Override
-	public void onEnable() {
+	public void onEnable()
+	{
 		EVENTS.add(UpdateListener.class, this);
 		EVENTS.add(AirStrafingSpeedListener.class, this);
 	}
 	
 	@Override
-	public void onDisable() {
+	public void onDisable()
+	{
 		EVENTS.remove(UpdateListener.class, this);
 		EVENTS.remove(AirStrafingSpeedListener.class, this);
 	}
 	
 	@Override
-	public void onUpdate() {
-		if (doSneakFall.isChecked() && MC.player.isSneaking()) //MC.options.keySneak.isPressed())
+	public void onUpdate()
+	{
+		if(doSneakFall.isChecked() && MC.player.isSneaking()) // MC.options.keySneak.isPressed())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
@@ -77,7 +82,8 @@ public final class GlideHack extends Hack
 			|| player.isClimbing() || v.y >= 0)
 			return;
 		
-		if(minHeight.getValue() > 0) {
+		if(minHeight.getValue() > 0)
+		{
 			Box box = player.getBoundingBox();
 			box = box.union(box.offset(0, -minHeight.getValue(), 0));
 			if(!MC.world.isSpaceEmpty(box))

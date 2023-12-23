@@ -21,8 +21,8 @@ import net.wurstclient.settings.EnumSetting;
 @DontBlock
 public final class WurstLogoOtf extends OtherFeature
 {
-	private final CheckboxSetting showBg =
-		new CheckboxSetting("Show BG", "Shows the background rectangle behind the logo and text", true);
+	private final CheckboxSetting showBg = new CheckboxSetting("Show BG",
+		"Shows the background rectangle behind the logo and text", true);
 	
 	private final ColorSetting bgColor = new ColorSetting("Background",
 		"Background color.\n"
@@ -34,7 +34,7 @@ public final class WurstLogoOtf extends OtherFeature
 	
 	private final EnumSetting<Visibility> visibility =
 		new EnumSetting<>("Visibility", Visibility.values(), Visibility.ALWAYS);
-
+	
 	private final EnumSetting<Format> format =
 		new EnumSetting<>("Format", Format.values(), Format.FULL);
 	
@@ -53,11 +53,13 @@ public final class WurstLogoOtf extends OtherFeature
 		return visibility.getSelected().isVisible();
 	}
 	
-	public boolean isBgVisible() {
+	public boolean isBgVisible()
+	{
 		return showBg.isChecked();
 	}
 	
-	public Format getFormat() {
+	public Format getFormat()
+	{
 		return format.getSelected();
 	}
 	
@@ -100,7 +102,8 @@ public final class WurstLogoOtf extends OtherFeature
 		}
 	}
 	
-	public static enum Format {
+	public static enum Format
+	{
 		FULL("Full"),
 		WurstOnly("Wurst Version Only"),
 		MCOnly("MC Version Only"),
@@ -108,12 +111,14 @@ public final class WurstLogoOtf extends OtherFeature
 		
 		private final String name;
 		
-		private Format(String name) {
+		private Format(String name)
+		{
 			this.name = name;
 		}
 		
 		@Override
-		public String toString() {
+		public String toString()
+		{
 			return name;
 		}
 	}

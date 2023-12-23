@@ -20,41 +20,50 @@ import net.wurstclient.util.ChatUtils;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public final class NameMCCmd extends Command {
-	private static final String mojangAPI = "https://api.mojang.com/users/profiles/minecraft/";
+public final class NameMCCmd extends Command
+{
+	private static final String mojangAPI =
+		"https://api.mojang.com/users/profiles/minecraft/";
 	
-	public NameMCCmd() {
-		super("namemc", "Quickly opens a user's NameMC profile.", ".namemc <username>");
+	public NameMCCmd()
+	{
+		super("namemc", "Quickly opens a user's NameMC profile.",
+			".namemc <username>");
 	}
-
+	
 	@Override
-	public void call(String[] args) throws CmdException {
-		if (args.length < 1) throw new CmdSyntaxError();
-
+	public void call(String[] args) throws CmdException
+	{
+		if(args.length < 1)
+			throw new CmdSyntaxError();
+		
 		final String target = String.join("", args);
-
-		try {
+		
+		try
+		{
 			final String uuid = fetchMojang(target);
 			
-			ChatUtils.message(
-					"Opening profile in the browser..."
-			);
+			ChatUtils.message("Opening profile in the browser...");
 			
 			String link = "https://namemc.com/profile/" + uuid;
 			Util.getOperatingSystem().open(link);
 			
-		} catch (Exception e) {
+		}catch(Exception e)
+		{
 			throw new CmdError("Failed to fetch profile");
 		}
 	}
 	
-	private String fetchMojang(String name) throws Exception {
+	private String fetchMojang(String name) throws Exception
+	{
 		URL url = new URL(mojangAPI + name);
 		
-		JsonObject obj = JsonParser.parseReader(new InputStreamReader(url.openStream()))
-			.getAsJsonObject();
+		JsonObject obj =
+			JsonParser.parseReader(new InputStreamReader(url.openStream()))
+				.getAsJsonObject();
 		
-		if (obj.has("id")) {
+		if(obj.has("id"))
+		{
 			return obj.get("id").getAsString();
 		}
 		

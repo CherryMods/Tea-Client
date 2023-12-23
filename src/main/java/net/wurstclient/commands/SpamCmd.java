@@ -14,23 +14,25 @@ import net.wurstclient.command.Command;
 import net.wurstclient.hacks.SpambotHack;
 
 @SearchTags({"spambot", "chatspam", "spammer"})
-public final class SpamCmd extends Command {
-	public SpamCmd() {
+public final class SpamCmd extends Command
+{
+	public SpamCmd()
+	{
 		super("spam", "Sets the message for the Spambot hack to use.\n",
-			".spam <message> \n\n"
-			+ "You can use:\n"
-			+ "%user% for your username\n"
-			+ "%time% for the current desktop time\n"
-			+ "%date% for the current desktop date\n"
-			+ "%fulldate% for the both\n"
-			+ "%rand% for a random number between 1 and 9999."
-			+ "Good for bypassing spam filters.\n"
-			+ "%ruser% for a random user. Nuff said.\n"
-			+ "And finally, use 2 percent signs to actually put a % into chat.");
+			".spam <message> \n\n" + "You can use:\n"
+				+ "%user% for your username\n"
+				+ "%time% for the current desktop time\n"
+				+ "%date% for the current desktop date\n"
+				+ "%fulldate% for the both\n"
+				+ "%rand% for a random number between 1 and 9999."
+				+ "Good for bypassing spam filters.\n"
+				+ "%ruser% for a random user. Nuff said.\n"
+				+ "And finally, use 2 percent signs to actually put a % into chat.");
 	}
 	
 	@Override
-	public void call(String[] args) throws CmdException {
+	public void call(String[] args) throws CmdException
+	{
 		if(args.length < 1)
 			throw new CmdSyntaxError();
 		

@@ -117,8 +117,8 @@ public class WurstOptionsScreen extends Screen
 	{
 		OperatingSystem os = Util.getOperatingSystem();
 		
-		new WurstOptionsButton(54, 24, () -> "Wurst Website",
-			"WurstClient.net", b -> os.open(
+		new WurstOptionsButton(54, 24, () -> "Wurst Website", "WurstClient.net",
+			b -> os.open(
 				"https://www.wurstclient.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Official+Website"));
 		
 		new WurstOptionsButton(54, 48, () -> "Wurst Wiki", "§n§lWurst.Wiki\n"
@@ -128,8 +128,7 @@ public class WurstOptionsScreen extends Screen
 				"https://wurst.wiki/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=Wurst+Wiki"));
 		
 		new WurstOptionsButton(54, 72, () -> "TeaClient Source", "GitHub",
-				b -> os.open(
-					"https://github.com/CherryMods/Tea-Client"));
+			b -> os.open("https://github.com/CherryMods/Tea-Client"));
 		new WurstOptionsButton(54, 96, () -> "WurstForum", "§n§lWurstForum.net",
 			b -> os.open(
 				"https://wurstforum.net/?utm_source=Wurst+Client&utm_medium=Wurst+Options&utm_content=WurstForum"));
