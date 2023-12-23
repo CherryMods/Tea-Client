@@ -99,6 +99,7 @@ public final class EmojisOtf extends OtherFeature implements ChatOutputListener 
 		":sword:",			"🗡",
 		":pickaxe:",		"⛏",
 		":sus:",			"ඞ",
+		":rocket:",			"🚀",
 		":skull:",			"☠",
 		":warn:",			"⚠",
 		":fishing:",		"🎣",
