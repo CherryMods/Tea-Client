@@ -17,11 +17,8 @@ import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 
-import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Objects;
 
 public final class NameMCCmd extends Command {
 	private static final String mojangAPI = "https://api.mojang.com/users/profiles/minecraft/";

@@ -80,7 +80,7 @@ public final class SpambotHack extends Hack implements UpdateListener {
 				.replaceAll("%date%", getDate("MM/dd/yyyy"))
 				.replaceAll("%time%", getDate("HH:mm:ss"))
 				.replaceAll("%rand%", "" + rand.nextInt(10000))
-				.replaceAll("%user%", MC.getSession().getProfile().getName())
+				.replaceAll("%user%", MC.player.getName().toString())
 				.replaceAll("%ruser%", getRandomPlayer());
 		return newMessage;
 	}
