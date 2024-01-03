@@ -50,6 +50,7 @@ public final class GlideHack extends Hack
 		super("Glide");
 		
 		setCategory(Category.MOVEMENT);
+		addSetting(doSneakFall);
 		addSetting(fallSpeed);
 		addSetting(moveSpeed);
 		addSetting(minHeight);
@@ -72,7 +73,7 @@ public final class GlideHack extends Hack
 	@Override
 	public void onUpdate()
 	{
-		if(doSneakFall.isChecked() && MC.player.isSneaking()) // MC.options.keySneak.isPressed())
+		if(doSneakFall.isChecked() && MC.player.isSneaking())
 			return;
 		
 		ClientPlayerEntity player = MC.player;
