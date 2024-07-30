@@ -8,20 +8,21 @@
 
 package net.wurstclient.mixin;
 
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.regex.Pattern;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 
@@ -30,11 +31,17 @@ import com.mojang.authlib.minecraft.MinecraftProfileTextures;
 
 import net.minecraft.client.texture.PlayerSkinProvider;
 import net.minecraft.client.util.SkinTextures;
+import net.minecraft.util.Uuids;
+import net.wurstclient.util.json.JsonUtils;
+import net.wurstclient.util.json.WsonObject;
 
 @Mixin(PlayerSkinProvider.class)
 public abstract class PlayerSkinProviderMixin
 {
-	private static JsonObject capes;
+	@Unique
+	private static HashMap<String, String> capes;
+	
+	@Unique
 	private MinecraftProfileTexture currentCape;
 	
 	private static final String[] CAPE_SOURCES =
@@ -54,9 +61,9 @@ public abstract class PlayerSkinProviderMixin
 			if(capes == null)
 				setupWurstCapes();
 			
-			if(capes.has(uuidString))
+			if(capes.containsKey(uuidString))
 			{
-				String capeURL = capes.get(uuidString).getAsString();
+				String capeURL = capes.get(uuidString);
 				currentCape = new MinecraftProfileTexture(capeURL, null);
 				
 			}else
@@ -86,24 +93,46 @@ public abstract class PlayerSkinProviderMixin
 		return result;
 	}
 	
+	@Unique
 	private void setupWurstCapes()
 	{
-		capes = new JsonObject();
+		capes = new HashMap<>();
 		
 		for(String src : CAPE_SOURCES)
 		{
-			
 			try
 			{
-				InputStreamReader reader =
-					new InputStreamReader(new URL(src).openStream());
-				JsonObject batch =
-					JsonParser.parseReader(reader).getAsJsonObject();
-				extendJsonObject(capes, batch);
+				// assign map first to prevent endless retries if download fails
+				Pattern uuidPattern = Pattern.compile(
+					"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
+				
+				// download cape list from wurstclient.net
+				WsonObject rawCapes = JsonUtils.parseURLToObject(src);
+				
+				// convert names to offline UUIDs
+				for(Entry<String, String> entry : rawCapes.getAllStrings()
+					.entrySet())
+				{
+					String name = entry.getKey();
+					String capeURL = entry.getValue();
+					
+					// check if name is already a UUID
+					if(uuidPattern.matcher(name).matches())
+					{
+						capes.put(name, capeURL);
+						continue;
+					}
+					
+					// convert name to offline UUID
+					String offlineUUID = "" + Uuids.getOfflinePlayerUuid(name);
+					capes.put(offlineUUID, capeURL);
+				}
+				
 			}catch(Exception e)
 			{
-				System.err.println(
-					"[Wurst] Failed to load capes for: `" + src + "`!");
+				System.err
+					.println("[Wurst] Failed to load capes from +" + src + "!");
+				
 				e.printStackTrace();
 			}
 		}
