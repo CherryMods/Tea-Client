@@ -41,10 +41,19 @@ public final class NoChatReportsOtf extends OtherFeature
 			}
 		};
 	
+	private final CheckboxSetting disableWarning =
+		new CheckboxSetting("Disable warning message", false);
+	
+	public boolean warningsDisabled()
+	{
+		return disableWarning.isChecked();
+	}
+	
 	public NoChatReportsOtf()
 	{
 		super("NoChatReports", "description.wurst.other_feature.nochatreports");
 		addSetting(disableSignatures);
+		addSetting(disableWarning);
 		
 		ClientLoginConnectionEvents.INIT.register(this::onLoginStart);
 	}
