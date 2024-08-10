@@ -39,11 +39,13 @@ public final class WurstUpdater implements UpdateListener
 		if(thread.isAlive())
 			return;
 		
-		if(component != null)
+		WurstClient wurst = WurstClient.INSTANCE;
+		
+		// don't show if the user disabled the update message
+		if(component != null && !wurst.getOtfs().noUpdateNagOtf.isEnabled())
 			ChatUtils.component(component);
 		
-		WurstClient.INSTANCE.getEventManager().remove(UpdateListener.class,
-			this);
+		wurst.getEventManager().remove(UpdateListener.class, this);
 	}
 	
 	public void checkForUpdates()
