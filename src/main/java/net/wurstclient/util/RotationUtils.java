@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -89,7 +89,12 @@ public enum RotationUtils
 	public static double getAngleToLastReportedLookVec(Rotation rotation)
 	{
 		ClientPlayerEntity player = MC.player;
-		Rotation lastReported = new Rotation(player.lastYaw, player.lastPitch);
+		
+		// lastYaw/Pitch do not get updated when the player is in a vehicle
+		Rotation lastReported = player.hasVehicle()
+			? new Rotation(player.getYaw(), player.getPitch())
+			: new Rotation(player.lastYawClient, player.lastPitchClient);
+		
 		return lastReported.getAngleTo(rotation);
 	}
 	
@@ -111,8 +116,8 @@ public enum RotationUtils
 	 */
 	public static Rotation slowlyTurnTowards(Rotation end, float maxChange)
 	{
-		float startYaw = MC.player.prevYaw;
-		float startPitch = MC.player.prevPitch;
+		float startYaw = MC.player.lastYawClient;
+		float startPitch = MC.player.lastPitchClient;
 		float endYaw = end.yaw();
 		float endPitch = end.pitch();
 		

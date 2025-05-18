@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -14,6 +14,7 @@ import net.minecraft.entity.mob.Monster;
 import net.minecraft.entity.mob.WaterCreatureEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.PufferfishEntity;
+import net.minecraft.entity.passive.WaterAnimalEntity;
 
 public final class FilterPassiveSetting extends EntityFilterCheckbox
 {
@@ -37,7 +38,8 @@ public final class FilterPassiveSetting extends EntityFilterCheckbox
 			return true;
 		
 		return !(e instanceof AnimalEntity || e instanceof AmbientEntity
-			|| e instanceof WaterCreatureEntity);
+			|| e instanceof WaterCreatureEntity
+			|| e instanceof WaterAnimalEntity);
 	}
 	
 	public static FilterPassiveSetting genericCombat(boolean checked)

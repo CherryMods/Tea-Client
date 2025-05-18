@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -84,7 +84,8 @@ public final class ArrowDmgHack extends Hack implements StopUsingItemListener
 	private void sendPos(double x, double y, double z, boolean onGround)
 	{
 		ClientPlayNetworkHandler netHandler = MC.player.networkHandler;
-		netHandler.sendPacket(new PositionAndOnGround(x, y, z, onGround));
+		netHandler.sendPacket(new PositionAndOnGround(x, y, z, onGround,
+			MC.player.horizontalCollision));
 	}
 	
 	private boolean isValidItem(Item item)

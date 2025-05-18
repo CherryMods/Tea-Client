@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -101,10 +101,10 @@ public final class AutoSoupHack extends Hack implements UpdateListener
 			
 			// save old slot
 			if(oldSlot == -1)
-				oldSlot = MC.player.getInventory().selectedSlot;
+				oldSlot = MC.player.getInventory().getSelectedSlot();
 			
 			// set slot
-			MC.player.getInventory().selectedSlot = soupInHotbar;
+			MC.player.getInventory().setSelectedSlot(soupInHotbar);
 			
 			// eat soup
 			MC.options.useKey.setPressed(true);
@@ -188,7 +188,7 @@ public final class AutoSoupHack extends Hack implements UpdateListener
 		MC.options.useKey.setPressed(false);
 		
 		// reset slot
-		MC.player.getInventory().selectedSlot = oldSlot;
+		MC.player.getInventory().setSelectedSlot(oldSlot);
 		oldSlot = -1;
 	}
 }

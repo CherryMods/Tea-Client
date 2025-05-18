@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -16,17 +16,20 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.ConsumableComponent;
 import net.minecraft.component.type.FoodComponent;
-import net.minecraft.component.type.FoodComponent.StatusEffectEntry;
-import net.minecraft.component.type.FoodComponents;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.consume.ApplyEffectsConsumeEffect;
+import net.minecraft.item.consume.ConsumeEffect;
+import net.minecraft.item.consume.TeleportRandomlyConsumeEffect;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.EntityHitResult;
@@ -178,14 +181,14 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		if(foodSlot < 9)
 		{
 			if(!isEating())
-				oldSlot = inventory.selectedSlot;
+				oldSlot = inventory.getSelectedSlot();
 			
-			inventory.selectedSlot = foodSlot;
+			inventory.setSelectedSlot(foodSlot);
 			
 		}else if(foodSlot == 40)
 		{
 			if(!isEating())
-				oldSlot = inventory.selectedSlot;
+				oldSlot = inventory.getSelectedSlot();
 			
 			// off-hand slot, no need to select anything
 			
@@ -210,7 +213,7 @@ public final class AutoEatHack extends Hack implements UpdateListener
 		
 		ArrayList<Integer> slots = new ArrayList<>();
 		if(maxInvSlot == 0)
-			slots.add(inventory.selectedSlot);
+			slots.add(inventory.getSelectedSlot());
 		if(allowOffhand.isChecked())
 			slots.add(40);
 		Stream.iterate(0, i -> i < maxInvSlot, i -> i + 1)
@@ -227,10 +230,10 @@ public final class AutoEatHack extends Hack implements UpdateListener
 			if(!stack.contains(DataComponentTypes.FOOD))
 				continue;
 			
-			FoodComponent food = stack.get(DataComponentTypes.FOOD);
-			if(!isAllowedFood(food))
+			if(!isAllowedFood(stack.get(DataComponentTypes.CONSUMABLE)))
 				continue;
 			
+			FoodComponent food = stack.get(DataComponentTypes.FOOD);
 			if(maxPoints >= 0 && food.nutrition() > maxPoints)
 				continue;
 			
@@ -266,24 +269,32 @@ public final class AutoEatHack extends Hack implements UpdateListener
 	private void stopEating()
 	{
 		MC.options.useKey.setPressed(false);
-		MC.player.getInventory().selectedSlot = oldSlot;
+		MC.player.getInventory().setSelectedSlot(oldSlot);
 		oldSlot = -1;
 	}
 	
-	private boolean isAllowedFood(FoodComponent food)
+	private boolean isAllowedFood(ConsumableComponent consumable)
 	{
-		if(!allowChorus.isChecked() && food == FoodComponents.CHORUS_FRUIT)
-			return false;
-		
-		for(StatusEffectEntry entry : food.effects())
+		for(ConsumeEffect consumeEffect : consumable.onConsumeEffects())
 		{
-			RegistryEntry<StatusEffect> effect = entry.effect().getEffectType();
-			
-			if(!allowHunger.isChecked() && effect == StatusEffects.HUNGER)
+			if(!allowChorus.isChecked()
+				&& consumeEffect instanceof TeleportRandomlyConsumeEffect)
 				return false;
 			
-			if(!allowPoison.isChecked() && effect == StatusEffects.POISON)
-				return false;
+			if(!(consumeEffect instanceof ApplyEffectsConsumeEffect applyEffectsConsumeEffect))
+				continue;
+			
+			for(StatusEffectInstance effect : applyEffectsConsumeEffect
+				.effects())
+			{
+				RegistryEntry<StatusEffect> entry = effect.getEffectType();
+				
+				if(!allowHunger.isChecked() && entry == StatusEffects.HUNGER)
+					return false;
+				
+				if(!allowPoison.isChecked() && entry == StatusEffects.POISON)
+					return false;
+			}
 		}
 		
 		return true;

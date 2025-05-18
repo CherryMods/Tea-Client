@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,8 +7,9 @@
  */
 package net.wurstclient.hacks;
 
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
+import net.minecraft.client.gui.screen.ingame.CreativeInventoryScreen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.screen.ingame.InventoryScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.wurstclient.Category;
@@ -107,7 +108,8 @@ public final class AutoTotemHack extends Hack implements UpdateListener
 		
 		// don't move items while a container is open
 		if(MC.currentScreen instanceof HandledScreen
-			&& !(MC.currentScreen instanceof AbstractInventoryScreen))
+			&& !(MC.currentScreen instanceof InventoryScreen
+				|| MC.currentScreen instanceof CreativeInventoryScreen))
 			return;
 		
 		if(timer > 0)

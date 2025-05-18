@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -98,8 +98,7 @@ public enum BlockUtils
 		
 		try
 		{
-			return Registries.BLOCK.getOrEmpty(Identifier.of(nameOrId))
-				.orElse(null);
+			return Registries.BLOCK.get(Identifier.of(nameOrId));
 			
 		}catch(InvalidIdentifierException e)
 		{
@@ -134,7 +133,7 @@ public enum BlockUtils
 	
 	public static boolean isOpaqueFullCube(BlockPos pos)
 	{
-		return getState(pos).isOpaqueFullCube(MC.world, pos);
+		return getState(pos).isOpaqueFullCube();
 	}
 	
 	public static BlockHitResult raycast(Vec3d from, Vec3d to,

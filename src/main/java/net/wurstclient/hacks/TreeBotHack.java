@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -15,10 +15,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
@@ -40,6 +37,7 @@ import net.wurstclient.settings.FacingSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
 import net.wurstclient.settings.SwingHandSetting;
+import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.BlockBreaker;
 import net.wurstclient.util.BlockBreaker.BlockBreakingParams;
 import net.wurstclient.util.BlockUtils;
@@ -55,7 +53,7 @@ public final class TreeBotHack extends Hack
 		ValueDisplay.DECIMAL);
 	
 	private final FacingSetting facing = FacingSetting.withoutPacketSpam(
-		"How to face the logs and leaves when breaking them.\n\n"
+		"How TreeBot should face the logs and leaves when breaking them.\n\n"
 			+ "\u00a7lOff\u00a7r - Don't face the blocks at all. Will be"
 			+ " detected by anti-cheat plugins.\n\n"
 			+ "\u00a7lServer-side\u00a7r - Face the blocks on the"
@@ -65,8 +63,8 @@ public final class TreeBotHack extends Hack
 			+ " camera on the client-side. This is the most legit option, but"
 			+ " can be disorienting to look at.");
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How TreeBot should swing your hand when breaking logs and leaves.");
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.SERVER);
 	
 	private TreeFinder treeFinder;
 	private AngleFinder angleFinder;
@@ -119,12 +117,7 @@ public final class TreeBotHack extends Hack
 		treeFinder = null;
 		angleFinder = null;
 		processor = null;
-		
-		if(tree != null)
-		{
-			tree.close();
-			tree = null;
-		}
+		tree = null;
 		
 		if(currentBlock != null)
 		{
@@ -152,11 +145,9 @@ public final class TreeBotHack extends Hack
 		}
 		
 		tree.getLogs().removeIf(Predicate.not(TreeBotUtils::isLog));
-		tree.compileBuffer();
 		
 		if(tree.getLogs().isEmpty())
 		{
-			tree.close();
 			tree = null;
 			return;
 		}
@@ -255,7 +246,6 @@ public final class TreeBotHack extends Hack
 	@Override
 	public void onRender(MatrixStack matrixStack, float partialTicks)
 	{
-		RenderSystem.setShader(GameRenderer::getPositionProgram);
 		PathCmd pathCmd = WURST.getCmds().pathCmd;
 		
 		if(treeFinder != null)

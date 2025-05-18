@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -21,16 +21,16 @@ import net.wurstclient.WurstClient;
 public abstract class RenderTickCounterDynamicMixin
 {
 	@Shadow
-	public float lastFrameDuration;
+	public float dynamicDeltaTicks;
 	
 	@Inject(at = @At(value = "FIELD",
-		target = "Lnet/minecraft/client/render/RenderTickCounter$Dynamic;prevTimeMillis:J",
+		target = "Lnet/minecraft/client/render/RenderTickCounter$Dynamic;lastTimeMillis:J",
 		opcode = Opcodes.PUTFIELD,
 		ordinal = 0), method = "beginRenderTick(J)I")
 	public void onBeginRenderTick(long timeMillis,
 		CallbackInfoReturnable<Integer> cir)
 	{
-		lastFrameDuration *=
+		dynamicDeltaTicks *=
 			WurstClient.INSTANCE.getHax().timerHack.getTimerSpeed();
 	}
 }

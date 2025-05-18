@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -70,10 +70,8 @@ public final class CrystalAuraHack extends Hack implements UpdateListener
 			+ "Slower but can help with anti-cheat plugins.",
 		false);
 	
-	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How CrystalAura should swing your hand when placing and detonating"
-			+ " end crystals.",
-		SwingHand.CLIENT);
+	private final SwingHandSetting swingHand =
+		new SwingHandSetting(this, SwingHand.CLIENT);
 	
 	private final EnumSetting<TakeItemsFrom> takeItemsFrom =
 		new EnumSetting<>("Take items from", "Where to look for end crystals.",

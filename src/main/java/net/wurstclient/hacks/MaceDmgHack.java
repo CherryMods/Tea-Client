@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -59,8 +59,8 @@ public final class MaceDmgHack extends Hack
 	
 	private void sendFakeY(double offset)
 	{
-		MC.player.networkHandler
-			.sendPacket(new PositionAndOnGround(MC.player.getX(),
-				MC.player.getY() + offset, MC.player.getZ(), false));
+		MC.player.networkHandler.sendPacket(
+			new PositionAndOnGround(MC.player.getX(), MC.player.getY() + offset,
+				MC.player.getZ(), false, MC.player.horizontalCollision));
 	}
 }

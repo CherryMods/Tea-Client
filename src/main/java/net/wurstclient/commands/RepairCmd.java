@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -39,14 +39,14 @@ public final class RepairCmd extends Command
 		stack.setDamage(0);
 		MC.player.networkHandler
 			.sendPacket(new CreativeInventoryActionC2SPacket(
-				36 + player.getInventory().selectedSlot, stack));
+				36 + player.getInventory().getSelectedSlot(), stack));
 		
 		ChatUtils.message("Item repaired.");
 	}
 	
 	private ItemStack getHeldStack(ClientPlayerEntity player) throws CmdError
 	{
-		ItemStack stack = player.getInventory().getMainHandStack();
+		ItemStack stack = player.getInventory().getSelectedStack();
 		
 		if(stack.isEmpty())
 			throw new CmdError("You need an item in your hand.");

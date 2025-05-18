@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -124,7 +124,7 @@ public final class TrollPotionHack extends Hack
 			
 			stack.set(DataComponentTypes.POTION_CONTENTS,
 				new PotionContentsComponent(Optional.empty(), Optional.empty(),
-					effects));
+					effects, Optional.empty()));
 			
 			String name = "\u00a7f" + itemName + " of Trolling";
 			stack.set(DataComponentTypes.CUSTOM_NAME, Text.literal(name));

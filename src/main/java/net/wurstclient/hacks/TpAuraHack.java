@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -50,7 +50,7 @@ public final class TpAuraHack extends Hack implements UpdateListener
 		Priority.values(), Priority.ANGLE);
 	
 	private final SwingHandSetting swingHand = new SwingHandSetting(
-		"How TP-Aura should swing your hand when attacking.", SwingHand.CLIENT);
+		SwingHandSetting.genericCombatDescription(this), SwingHand.CLIENT);
 	
 	private final PauseAttackOnContainersSetting pauseOnContainers =
 		new PauseAttackOnContainersSetting(true);

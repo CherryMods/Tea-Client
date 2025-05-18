@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -32,14 +32,14 @@ public final class ViewNbtCmd extends Command
 	public void call(String[] args) throws CmdException
 	{
 		ClientPlayerEntity player = MC.player;
-		ItemStack stack = player.getInventory().getMainHandStack();
+		ItemStack stack = player.getInventory().getSelectedStack();
 		if(stack.isEmpty())
 			throw new CmdError("You must hold an item in your main hand.");
 		
 		NbtCompound tag = stack
 			.getOrDefault(DataComponentTypes.CUSTOM_DATA, NbtComponent.DEFAULT)
 			.copyNbt();
-		String nbtString = tag.asString();
+		String nbtString = tag.toString();
 		
 		switch(String.join(" ", args).toLowerCase())
 		{

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -58,7 +58,8 @@ public final class EnchantCmd extends Command
 	private void enchant(ItemStack stack, int level)
 	{
 		DynamicRegistryManager drm = MC.world.getRegistryManager();
-		Registry<Enchantment> registry = drm.get(RegistryKeys.ENCHANTMENT);
+		Registry<Enchantment> registry =
+			drm.getOrThrow(RegistryKeys.ENCHANTMENT);
 		
 		for(RegistryEntry<Enchantment> entry : registry.getIndexedEntries())
 		{

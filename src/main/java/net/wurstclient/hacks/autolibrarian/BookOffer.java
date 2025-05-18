@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -28,7 +28,8 @@ public record BookOffer(String id, int level, int price)
 	public static BookOffer create(Enchantment enchantment)
 	{
 		DynamicRegistryManager drm = WurstClient.MC.world.getRegistryManager();
-		Registry<Enchantment> registry = drm.get(RegistryKeys.ENCHANTMENT);
+		Registry<Enchantment> registry =
+			drm.getOrThrow(RegistryKeys.ENCHANTMENT);
 		Identifier id = registry.getId(enchantment);
 		return new BookOffer("" + id, enchantment.getMaxLevel(), 64);
 	}
@@ -39,7 +40,8 @@ public record BookOffer(String id, int level, int price)
 			return Optional.empty();
 		
 		DynamicRegistryManager drm = WurstClient.MC.world.getRegistryManager();
-		Registry<Enchantment> registry = drm.get(RegistryKeys.ENCHANTMENT);
+		Registry<Enchantment> registry =
+			drm.getOrThrow(RegistryKeys.ENCHANTMENT);
 		return registry.getEntry(Identifier.of(id));
 	}
 	

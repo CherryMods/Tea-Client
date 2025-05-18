@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -7,6 +7,7 @@
  */
 package net.wurstclient.update;
 
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -120,7 +121,7 @@ public final class WurstUpdater implements UpdateListener
 	
 	private void showLink(String text, String url)
 	{
-		ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, url);
+		ClickEvent event = new ClickEvent.OpenUrl(URI.create(url));
 		component = Text.literal(text).styled(s -> s.withClickEvent(event));
 	}
 	

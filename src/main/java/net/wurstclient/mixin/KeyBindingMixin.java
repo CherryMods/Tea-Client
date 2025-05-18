@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -31,7 +31,11 @@ public abstract class KeyBindingMixin implements IKeyBinding
 	{
 		long handle = WurstClient.MC.getWindow().getHandle();
 		int code = boundKey.getCode();
-		setPressed(InputUtil.isKeyPressed(handle, code));
+		
+		if(boundKey.getCategory() == InputUtil.Type.MOUSE)
+			setPressed(GLFW.glfwGetMouseButton(handle, code) == 1);
+		else
+			setPressed(InputUtil.isKeyPressed(handle, code));
 	}
 	
 	@Override

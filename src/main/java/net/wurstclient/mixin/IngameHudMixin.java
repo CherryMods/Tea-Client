@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -40,7 +40,7 @@ public class IngameHudMixin
 		if(debugHud.shouldShowDebugHud())
 			return;
 		
-		float tickDelta = tickCounter.getTickDelta(true);
+		float tickDelta = tickCounter.getTickProgress(true);
 		EventManager.fire(new GUIRenderEvent(context, tickDelta));
 	}
 	

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2014-2024 Wurst-Imperium and contributors.
+ * Copyright (c) 2014-2025 Wurst-Imperium and contributors.
  *
  * This source code is subject to the terms of the GNU General Public
  * License, version 3. If a copy of the GPL was not distributed with this
@@ -101,6 +101,9 @@ public enum InventoryUtils
 	 * Counts the number of items in the player's inventory that match the given
 	 * predicate, searching from slot 0 to {@code maxInvSlot-1}.
 	 *
+	 * <p>
+	 * Note: Attempting to count empty slots will always return 0.
+	 *
 	 * @param predicate
 	 *            checks if an item should be counted
 	 * @param maxInvSlot
@@ -114,8 +117,10 @@ public enum InventoryUtils
 	public static int count(Predicate<ItemStack> predicate, int maxInvSlot,
 		boolean includeOffhand)
 	{
-		return (int)getMatchingSlots(predicate, maxInvSlot, includeOffhand)
-			.count();
+		PlayerInventory inventory = MC.player.getInventory();
+		
+		return getMatchingSlots(predicate, maxInvSlot, includeOffhand)
+			.map(slot -> inventory.getStack(slot).getCount()).sum();
 	}
 	
 	private static IntStream getMatchingSlots(Predicate<ItemStack> predicate,
@@ -210,14 +215,15 @@ public enum InventoryUtils
 		
 		// if the item is already in the hotbar, just select it
 		if(slot < 9)
-			inventory.selectedSlot = slot;
+			inventory.setSelectedSlot(slot);
 		// if there is an empty slot in the hotbar, shift-click the item there
 		// it will be selected in the next tick
 		else if(inventory.getEmptySlot() > -1 && inventory.getEmptySlot() < 9)
 			im.windowClick_QUICK_MOVE(toNetworkSlot(slot));
 		// otherwise, swap with the currently selected item
 		else
-			im.windowClick_SWAP(toNetworkSlot(slot), inventory.selectedSlot);
+			im.windowClick_SWAP(toNetworkSlot(slot),
+				inventory.getSelectedSlot());
 		
 		return true;
 	}
