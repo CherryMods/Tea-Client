@@ -77,3 +77,9 @@ jobs:
 
     - name: Build
       run: ./gradlew build --stacktrace --warning-mode=fail
+
+    - name: Draft GitHub Release
+      uses: softprops/action-gh-release@v2.2.2
+      with:
+        draft: true
+        files: build/libs/*.jar
