@@ -42,20 +42,19 @@ public final class NameMCCmd extends Command
 		
 		try
 		{
-			final String uuid = fetchMojang(target);
+			// try getting the uuid just to make sure the user exists (not a
+			// nick)
+			fetchUUIDFromMojang(target);
 			
 			ChatUtils.message("Opening profile in the browser...");
-			
-			String link = "https://namemc.com/profile/" + uuid;
-			Util.getOperatingSystem().open(link);
-			
+			Util.getOperatingSystem().open("https://namemc.com/" + target);
 		}catch(Exception e)
 		{
 			throw new CmdError("Failed to fetch profile");
 		}
 	}
 	
-	private String fetchMojang(String name) throws Exception
+	private String fetchUUIDFromMojang(String name) throws Exception
 	{
 		URL url = URI.create(mojangAPI + name).toURL();
 		
