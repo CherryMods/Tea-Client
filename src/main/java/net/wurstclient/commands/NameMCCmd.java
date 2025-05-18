@@ -11,7 +11,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import net.minecraft.util.Util;
-import net.wurstclient.command.CmdError;
 import net.wurstclient.command.CmdException;
 import net.wurstclient.command.CmdSyntaxError;
 import net.wurstclient.command.Command;
@@ -35,22 +34,30 @@ public final class NameMCCmd extends Command
 	@Override
 	public void call(String[] args) throws CmdException
 	{
+		// must have 1 or more arguments
 		if(args.length < 1)
 			throw new CmdSyntaxError();
 		
-		final String target = String.join("", args);
-		
+		// look up each target individually
+		for(String target : args)
+		{
+			lookup(target);
+		}
+	}
+	
+	private void lookup(String target)
+	{
 		try
 		{
-			// try getting the uuid just to make sure the user exists (not a
-			// nick)
+			// try getting the uuid just to make sure the user exists
 			fetchUUIDFromMojang(target);
 			
-			ChatUtils.message("Opening profile in the browser...");
+			ChatUtils
+				.message("Opening profile `" + target + "` in the browser...");
 			Util.getOperatingSystem().open("https://namemc.com/" + target);
 		}catch(Exception e)
 		{
-			throw new CmdError("Failed to fetch profile");
+			ChatUtils.error("Failed to fetch profile `" + target + "`");
 		}
 	}
 	
