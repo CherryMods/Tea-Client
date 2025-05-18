@@ -10,7 +10,6 @@ package net.wurstclient.hud;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 import net.wurstclient.WurstClient;
 import net.wurstclient.other_features.WurstLogoOtf;
@@ -24,7 +23,6 @@ public final class WurstLogo
 	
 	public void render(DrawContext context)
 	{
-		MatrixStack matrixStack = context.getMatrices();
 		WurstLogoOtf otf = WURST.getOtfs().wurstLogoOtf;
 		WurstLogoOtf.Format fmt = otf.getFormat();
 		

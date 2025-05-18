@@ -18,6 +18,7 @@ import net.wurstclient.command.Command;
 import net.wurstclient.util.ChatUtils;
 
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 
 public final class NameMCCmd extends Command
@@ -56,7 +57,7 @@ public final class NameMCCmd extends Command
 	
 	private String fetchMojang(String name) throws Exception
 	{
-		URL url = new URL(mojangAPI + name);
+		URL url = URI.create(mojangAPI + name).toURL();
 		
 		JsonObject obj =
 			JsonParser.parseReader(new InputStreamReader(url.openStream()))
