@@ -17,7 +17,7 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.ColorSetting;
 import net.wurstclient.settings.EnumSetting;
 
-@SearchTags({"wurst logo", "top left corner"})
+@SearchTags({"wurst logo", "top left corner", "tea logo"})
 @DontBlock
 public final class WurstLogoOtf extends OtherFeature
 {
