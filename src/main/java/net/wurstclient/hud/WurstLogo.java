@@ -15,59 +15,65 @@ import net.wurstclient.WurstClient;
 import net.wurstclient.other_features.WurstLogoOtf;
 import net.wurstclient.util.RenderUtils;
 
-public final class WurstLogo {
-    private static final WurstClient WURST = WurstClient.INSTANCE;
-    private static final Identifier LOGO_TEXTURE = Identifier.of("wurst", "wurst_128.png");
-
-    public void render(DrawContext context) {
-        MatrixStack matrixStack = context.getMatrices();
-        WurstLogoOtf otf = WURST.getOtfs().wurstLogoOtf;
-        WurstLogoOtf.Format fmt = otf.getFormat();
-
-        if (!otf.isVisible())
-            return;
-
-        String version = getVersionString(fmt);
-        TextRenderer tr = WurstClient.MC.textRenderer;
-
-        // draw version background if enabled
-        if (otf.isBgVisible()) {
-            // background
-            int bgColor;
-            if (WURST.getHax().rainbowUiHack.isEnabled())
-                bgColor = RenderUtils.toIntColor(WURST.getGui().getAcColor(), 0.5F);
-            else
-                bgColor = otf.getBackgroundColor();
-            context.fill(0, 6, tr.getWidth(version) + 76, 17, bgColor);
-        }
-
-        // version string
-        context.drawText(tr, version, 74, 8, otf.getTextColor(), false);
-
-        // Wurst logo
-        context.drawTexture(RenderLayer::getGuiTextured, LOGO_TEXTURE, 0, 3, 0,
-                0, 72, 18, 72, 18);
-    }
-
-    private String getVersionString(WurstLogoOtf.Format fmt) {
-        if (fmt == WurstLogoOtf.Format.NoVersion)
-            return "";
-        String res = "";
-
-        boolean showVer = (fmt == WurstLogoOtf.Format.FULL
-                || fmt == WurstLogoOtf.Format.WurstOnly);
-
-        boolean showMCVer = (fmt == WurstLogoOtf.Format.FULL
-                || fmt == WurstLogoOtf.Format.MCOnly);
-
-        if (showVer)
-            res += "v" + WurstClient.VERSION + (showMCVer ? " " : "");
-        if (showMCVer)
-            res += "MC" + WurstClient.MC_VERSION;
-
-        if (WURST.getUpdater().isOutdated())
-            res += " (outdated)";
-
-        return res;
-    }
+public final class WurstLogo
+{
+	private static final WurstClient WURST = WurstClient.INSTANCE;
+	private static final Identifier LOGO_TEXTURE =
+		Identifier.of("wurst", "wurst_128.png");
+	
+	public void render(DrawContext context)
+	{
+		MatrixStack matrixStack = context.getMatrices();
+		WurstLogoOtf otf = WURST.getOtfs().wurstLogoOtf;
+		WurstLogoOtf.Format fmt = otf.getFormat();
+		
+		if(!otf.isVisible())
+			return;
+		
+		String version = getVersionString(fmt);
+		TextRenderer tr = WurstClient.MC.textRenderer;
+		
+		// draw version background if enabled
+		if(otf.isBgVisible())
+		{
+			// background
+			int bgColor;
+			if(WURST.getHax().rainbowUiHack.isEnabled())
+				bgColor =
+					RenderUtils.toIntColor(WURST.getGui().getAcColor(), 0.5F);
+			else
+				bgColor = otf.getBackgroundColor();
+			context.fill(0, 6, tr.getWidth(version) + 76, 17, bgColor);
+		}
+		
+		// version string
+		context.drawText(tr, version, 74, 8, otf.getTextColor(), false);
+		
+		// Wurst logo
+		context.drawTexture(RenderLayer::getGuiTextured, LOGO_TEXTURE, 0, 3, 0,
+			0, 72, 18, 72, 18);
+	}
+	
+	private String getVersionString(WurstLogoOtf.Format fmt)
+	{
+		if(fmt == WurstLogoOtf.Format.NoVersion)
+			return "";
+		String res = "";
+		
+		boolean showVer = (fmt == WurstLogoOtf.Format.FULL
+			|| fmt == WurstLogoOtf.Format.WurstOnly);
+		
+		boolean showMCVer = (fmt == WurstLogoOtf.Format.FULL
+			|| fmt == WurstLogoOtf.Format.MCOnly);
+		
+		if(showVer)
+			res += "v" + WurstClient.VERSION + (showMCVer ? " " : "");
+		if(showMCVer)
+			res += "MC" + WurstClient.MC_VERSION;
+		
+		if(WURST.getUpdater().isOutdated())
+			res += " (outdated)";
+		
+		return res;
+	}
 }
