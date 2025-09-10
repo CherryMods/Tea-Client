@@ -1,6 +1,5 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "net.wurstclient.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
@@ -9,7 +8,7 @@
     "AbstractSignEditScreenMixin",
     "AbstractTerrainRenderContextMixin",
     "AllowedAddressResolverMixin",
-    "BackgroundRendererMixin",
+    "AtmosphericFogModifierMixin",
     "BlockEntityRenderDispatcherMixin",
     "BlockMixin",
     "BlockModelRendererMixin",
@@ -29,13 +28,14 @@
     "ControlsListWidgetMixin",
     "CreativeInventoryScreenMixin",
     "DeathScreenMixin",
+    "DimensionOrBossFogModifierMixin",
     "DirectConnectScreenMixin",
-    "DisconnectedRealmsScreenMixin",
     "DisconnectedScreenMixin",
     "EntityMixin",
     "EntityRenderDispatcherMixin",
     "EntityRendererMixin",
     "FluidRendererMixin",
+    "FogRendererMixin",
     "GameMenuScreenMixin",
     "GameRendererMixin",
     "GenericContainerScreenMixin",
@@ -59,8 +59,9 @@
     "ScreenMixin",
     "ShulkerBoxScreenMixin",
     "SimpleOptionMixin",
+    "SodiumAbstractBlockRenderContextMixin",
+    "SodiumBlockRendererMixin",
     "SodiumDefaultFluidRendererMixin",
-    "SodiumBlockOcclusionCacheMixin",
     "StatsScreenMixin",
     "StatusEffectInstanceMixin",
     "TelemetryManagerMixin",
@@ -71,5 +72,8 @@
   ],
   "injectors": {
     "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
   }
 }

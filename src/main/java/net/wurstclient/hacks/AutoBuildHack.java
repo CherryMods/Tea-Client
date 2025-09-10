@@ -9,10 +9,15 @@ package net.wurstclient.hacks;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +33,6 @@ import net.wurstclient.settings.CheckboxSetting;
 import net.wurstclient.settings.FileSetting;
 import net.wurstclient.settings.SliderSetting;
 import net.wurstclient.settings.SliderSetting.ValueDisplay;
-import net.wurstclient.settings.SwingHandSetting.SwingHand;
 import net.wurstclient.util.*;
 import net.wurstclient.util.BlockPlacer.BlockPlacingParams;
 import net.wurstclient.util.json.JsonException;
@@ -55,18 +59,27 @@ public final class AutoBuildHack extends Hack
 		"Makes sure that you don't reach through walls when placing blocks. Can help with AntiCheat plugins but slows down building.",
 		false);
 	
-	private final CheckboxSetting instaBuild = new CheckboxSetting("InstaBuild",
-		"Builds small templates (<= 64 blocks) instantly.\n"
-			+ "For best results, stand close to the block you're placing.",
+	private final CheckboxSetting useSavedBlocks = new CheckboxSetting(
+		"Use saved blocks",
+		"Tries to place the same blocks that were saved in the template.\n\n"
+			+ "If the template does not specify block types, it will be built"
+			+ " from whatever block you are holding.",
 		true);
 	
 	private final CheckboxSetting fastPlace =
 		new CheckboxSetting("Always FastPlace",
 			"Builds as if FastPlace was enabled, even if it's not.", true);
 	
+	private final CheckboxSetting strictBuildOrder = new CheckboxSetting(
+		"Strict build order",
+		"Places blocks in exactly the same order that they appear in the"
+			+ " template. This is slower, but provides more consistent results.",
+		false);
+	
 	private Status status = Status.NO_TEMPLATE;
 	private AutoBuildTemplate template;
-	private LinkedHashSet<BlockPos> remainingBlocks = new LinkedHashSet<>();
+	private LinkedHashMap<BlockPos, Item> remainingBlocks =
+		new LinkedHashMap<>();
 	
 	public AutoBuildHack()
 	{
@@ -75,8 +88,9 @@ public final class AutoBuildHack extends Hack
 		addSetting(templateSetting);
 		addSetting(range);
 		addSetting(checkLOS);
-		addSetting(instaBuild);
+		addSetting(useSavedBlocks);
 		addSetting(fastPlace);
+		addSetting(strictBuildOrder);
 	}
 	
 	@Override
@@ -111,6 +125,7 @@ public final class AutoBuildHack extends Hack
 	@Override
 	protected void onEnable()
 	{
+		WURST.getHax().instaBuildHack.setEnabled(false);
 		WURST.getHax().templateToolHack.setEnabled(false);
 		
 		EVENTS.add(UpdateListener.class, this);
@@ -150,12 +165,9 @@ public final class AutoBuildHack extends Hack
 		
 		BlockPos startPos = hitResultPos.offset(blockHitResult.getSide());
 		Direction direction = MC.player.getHorizontalFacing();
-		remainingBlocks = template.getPositions(startPos, direction);
+		remainingBlocks = template.getBlocksToPlace(startPos, direction);
 		
-		if(instaBuild.isChecked() && template.size() <= 64)
-			buildInstantly();
-		else
-			status = Status.BUILDING;
+		status = Status.BUILDING;
 	}
 	
 	@Override
@@ -187,7 +199,7 @@ public final class AutoBuildHack extends Hack
 		if(status != Status.BUILDING)
 			return;
 		
-		List<BlockPos> blocksToDraw = remainingBlocks.stream()
+		List<BlockPos> blocksToDraw = remainingBlocks.keySet().stream()
 			.filter(pos -> BlockUtils.getState(pos).isReplaceable()).limit(1024)
 			.toList();
 		
@@ -207,7 +219,7 @@ public final class AutoBuildHack extends Hack
 	
 	private void buildNormally()
 	{
-		remainingBlocks
+		remainingBlocks.keySet()
 			.removeIf(pos -> !BlockUtils.getState(pos).isReplaceable());
 		
 		if(remainingBlocks.isEmpty())
@@ -220,40 +232,49 @@ public final class AutoBuildHack extends Hack
 			return;
 		
 		double rangeSq = range.getValueSq();
-		for(BlockPos pos : remainingBlocks)
+		for(Map.Entry<BlockPos, Item> entry : remainingBlocks.entrySet())
 		{
+			BlockPos pos = entry.getKey();
+			Item item = entry.getValue();
+			
 			BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(pos);
-			if(params == null || params.distanceSq() > rangeSq)
-				continue;
-			if(checkLOS.isChecked() && !params.lineOfSight())
-				continue;
+			if(params == null || params.distanceSq() > rangeSq
+				|| checkLOS.isChecked() && !params.lineOfSight())
+				if(strictBuildOrder.isChecked())
+					return;
+				else
+					continue;
+				
+			if(useSavedBlocks.isChecked() && item != Items.AIR
+				&& !MC.player.getMainHandStack().isOf(item))
+			{
+				giveOrSelectItem(item);
+				return;
+			}
 			
 			MC.itemUseCooldown = 4;
 			RotationUtils.getNeededRotations(params.hitVec())
 				.sendPlayerLookPacket();
 			InteractionSimulator.rightClickBlock(params.toHitResult());
-			break;
+			return;
 		}
 	}
 	
-	private void buildInstantly()
+	private void giveOrSelectItem(Item item)
 	{
-		double rangeSq = range.getValueSq();
+		if(InventoryUtils.selectItem(item, 36, true))
+			return;
 		
-		for(BlockPos pos : remainingBlocks)
-		{
-			if(!BlockUtils.getState(pos).isReplaceable())
-				continue;
-			
-			BlockPlacingParams params = BlockPlacer.getBlockPlacingParams(pos);
-			if(params == null || params.distanceSq() > rangeSq)
-				continue;
-			
-			InteractionSimulator.rightClickBlock(params.toHitResult(),
-				SwingHand.OFF);
-		}
+		if(!MC.player.isInCreativeMode())
+			return;
 		
-		remainingBlocks.clear();
+		PlayerInventory inventory = MC.player.getInventory();
+		int slot = inventory.getEmptySlot();
+		if(slot < 0)
+			slot = inventory.getSelectedSlot();
+		
+		ItemStack stack = new ItemStack(item);
+		InventoryUtils.setCreativeStack(slot, stack);
 	}
 	
 	private void loadSelectedTemplate()
